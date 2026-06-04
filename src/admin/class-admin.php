@@ -59,6 +59,7 @@ class Admin {
 		add_action( 'init', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'create_post_type_posts' ], 100 );
 		add_action( 'init', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'register_block_templates' ], 999 );
 		add_filter( 'default_content', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'set_default_content' ], 10, 2 );
+		add_filter( 'allowed_block_types_all', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'inherit_allowed_block_types' ], PHP_INT_MAX, 2 );
 		add_action( 'admin_notices', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'stale_template_notice' ] );
 		add_action( 'admin_post_abet_trash_stale_template', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'trash_stale_template' ] );
 		add_action( 'admin_post_abet_trash_all_stale_templates', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'trash_all_stale_templates' ] );
@@ -410,6 +411,51 @@ class Admin {
 		}
 
 		return $blocks;
+	}
+
+	/**
+	 * Apply the target post type's allowed blocks to its Post Type Template editor.
+	 *
+	 * A Post Type Template (the 'block-templates' post type) is edited in its own editor, so block
+	 * restrictions registered for the target post type via 'allowed_block_types_all' do not normally
+	 * apply and every block would be selectable. This re-runs that filter with a context that mimics
+	 * the target post type, so the template offers exactly the blocks the real post type allows.
+	 *
+	 * @param bool|string[]            $allowed_block_types Allowed block types, or true for all of them.
+	 * @param \WP_Block_Editor_Context $context             The current block editor context.
+	 *
+	 * @return bool|string[] The (possibly restricted) allowed block types.
+	 */
+	public static function inherit_allowed_block_types( $allowed_block_types, $context ) {
+		static $running = false;
+
+		if ( $running || ! $context instanceof \WP_Block_Editor_Context || ! $context->post instanceof WP_Post ) {
+			return $allowed_block_types;
+		}
+
+		if ( 'block-templates' !== $context->post->post_type ) {
+			return $allowed_block_types;
+		}
+
+		$target_post_type = get_post_meta( $context->post->ID, '_template_for_posttype', true );
+		if ( empty( $target_post_type ) || ! post_type_exists( $target_post_type ) ) {
+			return $allowed_block_types;
+		}
+
+		// Re-run the filter with a context that looks like the target post type, so restrictions
+		// registered for that post type apply here too. The static guard prevents infinite recursion.
+		$proxy_context = new \WP_Block_Editor_Context(
+			[
+				'name' => $context->name,
+				'post' => new \WP_Post( (object) [ 'ID' => 0, 'post_type' => $target_post_type ] ),
+			]
+		);
+
+		$running             = true;
+		$allowed_block_types = apply_filters( 'allowed_block_types_all', $allowed_block_types, $proxy_context );
+		$running             = false;
+
+		return $allowed_block_types;
 	}
 
 	/**

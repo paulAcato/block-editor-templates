@@ -72,8 +72,8 @@ class Admin {
 			add_action( 'init', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'create_special_pages' ], 100 );
 			add_filter( 'archive_template', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'get_custom_archive' ] );
 
-			// Set default 404 post template.
-			add_filter( 'template_include', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'set_404_template' ], 99 );
+			// Load the template for special pages (e.g. the 404 page).
+			add_filter( 'template_include', [ 'Acato\Block_Editor_Templates\Admin\Admin', 'set_special_template' ], 99 );
 		}
 	}
 
@@ -879,16 +879,40 @@ class Admin {
 	}
 
 	/**
-	 * Create a special page for each registered special page.
+	 * Definitions of the special pages that can have a template.
+	 *
+	 * Each entry is keyed by its slug (stored in the _template_for_special meta) and describes how the
+	 * page is created, previewed and rendered:
+	 *  - name:      Label used for the generated template post.
+	 *  - condition: Callable returning true on the front-end request this page represents (e.g. 'is_404').
+	 *  - template:  Template file to load, resolved via the theme first and then the plugin's templates/ dir.
+	 *  - preview:   Front-end preview URL, or false when there is none.
+	 *
+	 * Extend this through the 'abet_special_pages' filter to add your own special pages.
+	 *
+	 * @return array<string, array<string, mixed>> The special page definitions, keyed by slug.
+	 */
+	public static function special_pages() {
+		return (array) apply_filters(
+			'abet_special_pages',
+			[
+				'404' => [
+					'name'      => __( '404 page', 'block-editor-templates' ),
+					'condition' => 'is_404',
+					'template'  => 'abet-404.php',
+					'preview'   => home_url( '/abet-404-preview' ),
+				],
+			]
+		);
+	}
+
+	/**
+	 * Create a template post for each registered special page.
 	 *
 	 * @return void
 	 */
 	public static function create_special_pages() {
 		global $wpdb;
-
-		$special_pages = [
-			'404' => __( '404 page', 'block-editor-templates' ),
-		];
 
 		// Get all created templates.
 		$created_templates = $wpdb->get_results(
@@ -897,7 +921,7 @@ class Admin {
 		);
 		$created_templates = array_column( $created_templates, 'meta_value' );
 
-		foreach ( $special_pages as $special_page_slug => $special_page_name ) {
+		foreach ( self::special_pages() as $special_page_slug => $config ) {
 			// Force the slug to be a string.
 			$special_page_slug = (string) $special_page_slug;
 
@@ -905,7 +929,7 @@ class Admin {
 				wp_insert_post(
 					[
 						'post_type'   => 'special-templates',
-						'post_title'  => $special_page_name,
+						'post_title'  => $config['name'] ?? $special_page_slug,
 						'post_status' => 'draft',
 						'meta_input'  => [
 							'_template_for_special' => $special_page_slug,
@@ -1214,11 +1238,9 @@ class Admin {
 				return false;
 
 			case 'special-templates':
-				$meta_value = get_post_meta( $post->ID, '_template_for_special', true );
-				if ( '404' === $meta_value ) {
-					return home_url( '/abet-404-preview' );
-				}
-				return false;
+				$meta_value    = get_post_meta( $post->ID, '_template_for_special', true );
+				$special_pages = self::special_pages();
+				return $special_pages[ $meta_value ]['preview'] ?? false;
 
 			default:
 				return false;
@@ -1226,44 +1248,68 @@ class Admin {
 	}
 
 	/**
-	 * Set the 404 template.
+	 * Load the template for the special page matching the current request, if any.
 	 *
-	 * @param string $template The template to use.
+	 * Walks the special pages (see self::special_pages()), and for the first one whose condition
+	 * matches the current request it looks up its published template post (by the _template_for_special
+	 * meta) and returns its template file, resolved via the theme first and then the plugin's templates/ dir.
+	 *
+	 * @param string $template The template WordPress resolved for this request.
 	 *
 	 * @return string The template to use.
 	 */
-	public static function set_404_template( $template ) {
+	public static function set_special_template( $template ) {
 		global $abet_template_post;
 
-		// Check if we are on a 404 page.
-		if ( ! is_404() ) {
-			return $template;
+		foreach ( self::special_pages() as $special_page_slug => $config ) {
+			$condition = $config['condition'] ?? null;
+			if ( ! is_callable( $condition ) || ! call_user_func( $condition ) ) {
+				continue;
+			}
+
+			$post_id = self::get_special_template_post_id( (string) $special_page_slug );
+			if ( ! $post_id ) {
+				break;
+			}
+
+			$abet_template_post = get_post( $post_id );
+
+			$template_file = $config['template'] ?? '';
+			$located       = $template_file ? locate_template( [ $template_file ] ) : '';
+			if ( $located ) {
+				return $located;
+			}
+
+			if ( $template_file && file_exists( ABET_ABSPATH . 'templates/' . $template_file ) ) {
+				return ABET_ABSPATH . 'templates/' . $template_file;
+			}
+
+			break;
 		}
 
-		$abet_template_404 = get_posts(
+		return $template;
+	}
+
+	/**
+	 * Get the ID of the published template post for a special page slug.
+	 *
+	 * @param string $slug The special page slug as stored in the _template_for_special meta.
+	 *
+	 * @return int The post ID, or 0 when there is no published template.
+	 */
+	private static function get_special_template_post_id( $slug ) {
+		$posts = get_posts(
 			[
 				'fields'         => 'ids',
 				'post_type'      => 'special-templates',
 				'posts_per_page' => 1,
 				'post_status'    => 'publish',
-				'post_name'      => '404',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Identifying the template by its slug requires a meta lookup.
+				'meta_key'       => '_template_for_special',
+				'meta_value'     => $slug,
 			]
 		);
 
-		if ( $abet_template_404 ) {
-			$post_id            = reset( $abet_template_404 );
-			$abet_template_post = get_post( $post_id );
-
-			$templates[] = 'abet-404.php';
-			$template    = locate_template( $templates );
-
-			if ( ! $template ) {
-				$template = ABET_ABSPATH . 'templates/abet-404.php';
-			}
-
-			return $template;
-		}
-
-		return get_404_template();
+		return $posts ? (int) reset( $posts ) : 0;
 	}
 }

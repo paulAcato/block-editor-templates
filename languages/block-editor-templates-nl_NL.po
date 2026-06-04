@@ -1,209 +1,153 @@
-# Copyright (C) 2026 Acato
-# This file is distributed under the GPLv3.
+# Dutch translation for the Block Editor Templates plugin.
+# This file is distributed under the same license as the Block Editor Templates plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: Block Editor Templates 1.0.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/block-editor-templates\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: Acato <support@acato.nl>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-04T09:34:55+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: block-editor-templates\n"
-
-#. Plugin Name of the plugin
-#: block-editor-templates.php
-msgid "Block Editor Templates"
-msgstr ""
-
-#. Plugin URI of the plugin
-#. Author URI of the plugin
-#: block-editor-templates.php
-msgid "https://www.acato.nl"
-msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Description of the plugin
-#: block-editor-templates.php
 msgid "Templates for the WordPress Block Editor."
-msgstr ""
+msgstr "Sjablonen voor de WordPress blokeditor."
 
-#. Author of the plugin
-#: block-editor-templates.php
-msgid "Acato"
-msgstr ""
-
-#: src/admin/class-admin.php:93
 msgctxt "posttype single name global used"
 msgid "Post Type Template"
-msgstr ""
+msgstr "Berichttype-sjabloon"
 
-#: src/admin/class-admin.php:94
 msgctxt "posttype plural name global used"
 msgid "Post Type Templates"
-msgstr ""
+msgstr "Berichttype-sjablonen"
 
-#: src/admin/class-admin.php:95
 msgctxt "posttype description"
 msgid "Templates that are applied to each new post of the matching post type."
-msgstr ""
+msgstr "Sjablonen die worden toegepast op elk nieuw bericht van het bijbehorende berichttype."
 
-#: src/admin/class-admin.php:102
 msgctxt "posttype single name global used"
 msgid "Post Type Archive Template"
-msgstr ""
+msgstr "Berichttype-archiefsjabloon"
 
-#: src/admin/class-admin.php:103
 msgctxt "posttype plural name global used"
 msgid "Post Type Archive Templates"
-msgstr ""
+msgstr "Berichttype-archiefsjablonen"
 
-#: src/admin/class-admin.php:104
 msgctxt "posttype description"
 msgid "Templates that render the archive page of the matching post type."
-msgstr ""
+msgstr "Sjablonen die de archiefpagina van het bijbehorende berichttype weergeven."
 
-#: src/admin/class-admin.php:111
 msgctxt "posttype single name global used"
 msgid "Taxonomy Archive Template"
-msgstr ""
+msgstr "Taxonomie-archiefsjabloon"
 
-#: src/admin/class-admin.php:112
 msgctxt "posttype plural name global used"
 msgid "Taxonomy Archive Templates"
-msgstr ""
+msgstr "Taxonomie-archiefsjablonen"
 
-#: src/admin/class-admin.php:113
 msgctxt "posttype description"
 msgid "Templates that render the archive page of the matching taxonomy."
-msgstr ""
+msgstr "Sjablonen die de archiefpagina van de bijbehorende taxonomie weergeven."
 
-#: src/admin/class-admin.php:120
 msgctxt "posttype single name global used"
 msgid "Special Template"
-msgstr ""
+msgstr "Speciaal sjabloon"
 
-#: src/admin/class-admin.php:121
 msgctxt "posttype plural name global used"
 msgid "Special Templates"
-msgstr ""
+msgstr "Speciale sjablonen"
 
-#: src/admin/class-admin.php:122
 msgctxt "posttype description"
 msgid "Templates for special pages, such as the 404 page."
-msgstr ""
+msgstr "Sjablonen voor speciale pagina's, zoals de 404-pagina."
 
-#. translators: %d: number of templates moved to the trash.
-#: src/admin/class-admin.php:521
 #, php-format
 msgid "%d template moved to the trash."
 msgid_plural "%d templates moved to the trash."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sjabloon naar de prullenbak verplaatst."
+msgstr[1] "%d sjablonen naar de prullenbak verplaatst."
 
-#: src/admin/class-admin.php:540
 msgid "These Post Type Templates exist for post types that no longer use the block editor. You can move them to the trash:"
-msgstr ""
+msgstr "Deze berichttype-sjablonen bestaan voor berichttypen die de blokeditor niet meer gebruiken. Je kunt ze naar de prullenbak verplaatsen:"
 
-#: src/admin/class-admin.php:553
 msgid "Move all to Trash"
-msgstr ""
+msgstr "Alles naar de prullenbak verplaatsen"
 
-#. translators: %s: template title.
-#: src/admin/class-admin.php:567
 #, php-format
 msgid "The Post Type Template “%s” exists for a post type that no longer uses the block editor."
-msgstr ""
+msgstr "Het berichttype-sjabloon “%s” bestaat voor een berichttype dat de blokeditor niet meer gebruikt."
 
-#. translators: %d: template post ID.
-#: src/admin/class-admin.php:588
 #, php-format
 msgid "Template #%d"
-msgstr ""
+msgstr "Sjabloon #%d"
 
-#: src/admin/class-admin.php:618
 msgid "Move to Trash"
-msgstr ""
+msgstr "Naar de prullenbak verplaatsen"
 
-#: src/admin/class-admin.php:632
 msgid "You are not allowed to trash this template."
-msgstr ""
+msgstr "Je hebt geen toestemming om dit sjabloon naar de prullenbak te verplaatsen."
 
-#: src/admin/class-admin.php:767
-#: src/admin/class-admin.php:846
 msgid "_General Template"
-msgstr ""
+msgstr "_Algemeen sjabloon"
 
-#: src/admin/class-admin.php:890
 msgid "404 page"
-msgstr ""
+msgstr "404-pagina"
 
-#: src/admin/class-admin.php:947
 msgid "View"
-msgstr ""
+msgstr "Bekijken"
 
-#: src/admin/class-admin.php:970
 msgid "Add New"
-msgstr ""
+msgstr "Nieuwe toevoegen"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:972
 #, php-format
 msgid "Add New %s"
-msgstr ""
+msgstr "Nieuwe %s toevoegen"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:974
 #, php-format
 msgid "Edit %s"
-msgstr ""
+msgstr "%s bewerken"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:976
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "Nieuwe %s"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:978
 #, php-format
 msgid "All %s"
-msgstr ""
+msgstr "Alle %s"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:980
 #, php-format
 msgid "View %s"
-msgstr ""
+msgstr "%s bekijken"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:982
 #, php-format
 msgid "Search %s"
-msgstr ""
+msgstr "%s zoeken"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:984
 #, php-format
 msgid "No %s found"
-msgstr ""
+msgstr "Geen %s gevonden"
 
 #. translators: %s: CPT name
-#: src/admin/class-admin.php:986
 #, php-format
 msgid "No %s found in trash"
-msgstr ""
+msgstr "Geen %s gevonden in de prullenbak"
 
-#: src/admin/class-admin.php:1177
 msgid "Item is deleted"
-msgstr ""
+msgstr "Item is verwijderd"
 
-#: src/admin/assets/src/abet-filters.js:61
 msgid "Placeholder options"
-msgstr ""
+msgstr "Placeholder-opties"
 
-#: src/admin/assets/src/abet-filters.js:64
 msgid "Use text as placeholder"
-msgstr ""
+msgstr "Tekst als placeholder gebruiken"

@@ -92,7 +92,7 @@ class Admin {
 				'block-templates'    => [
 					'single'               => _x( 'Post Type Template', 'posttype single name global used', 'block-editor-templates' ),
 					'plural'               => _x( 'Post Type Templates', 'posttype plural name global used', 'block-editor-templates' ),
-					'description'          => _x( 'Post Type Templates', 'posttype description', 'block-editor-templates' ),
+					'description'          => _x( 'Templates that are applied to each new post of the matching post type.', 'posttype description', 'block-editor-templates' ),
 					'meta_field'           => '_template_for_posttype',
 					'for'                  => 'post_type',
 					'general_template'     => false,
@@ -101,7 +101,7 @@ class Admin {
 				'pt-arch-templates'  => [
 					'single'               => _x( 'Post Type Archive Template', 'posttype single name global used', 'block-editor-templates' ),
 					'plural'               => _x( 'Post Type Archive Templates', 'posttype plural name global used', 'block-editor-templates' ),
-					'description'          => _x( 'Post Type Archive Templates', 'posttype description', 'block-editor-templates' ),
+					'description'          => _x( 'Templates that render the archive page of the matching post type.', 'posttype description', 'block-editor-templates' ),
 					'meta_field'           => '_template_for_posttype_archive',
 					'for'                  => 'post_type',
 					'general_template'     => true,
@@ -110,7 +110,7 @@ class Admin {
 				'tax-arch-templates' => [
 					'single'               => _x( 'Taxonomy Archive Template', 'posttype single name global used', 'block-editor-templates' ),
 					'plural'               => _x( 'Taxonomy Archive Templates', 'posttype plural name global used', 'block-editor-templates' ),
-					'description'          => _x( 'Taxonomy Archive Templates', 'posttype description', 'block-editor-templates' ),
+					'description'          => _x( 'Templates that render the archive page of the matching taxonomy.', 'posttype description', 'block-editor-templates' ),
 					'meta_field'           => '_template_for_taxonomy_archive',
 					'for'                  => 'taxonomy',
 					'general_template'     => true,
@@ -119,7 +119,7 @@ class Admin {
 				'special-templates'  => [
 					'single'               => _x( 'Special Template', 'posttype single name global used', 'block-editor-templates' ),
 					'plural'               => _x( 'Special Templates', 'posttype plural name global used', 'block-editor-templates' ),
-					'description'          => _x( 'Special Templates', 'posttype description', 'block-editor-templates' ),
+					'description'          => _x( 'Templates for special pages, such as the 404 page.', 'posttype description', 'block-editor-templates' ),
 					'meta_field'           => '_template_for_special',
 					'for'                  => 'special',
 					'general_template'     => false,

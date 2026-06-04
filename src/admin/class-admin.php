@@ -418,30 +418,30 @@ class Admin {
 	 * @return void
 	 */
 	public static function enqueue_admin_assets() {
-		if ( 'block-templates' === get_post_type( get_queried_object_id() ) ) {
-			$script_asset_path = ABET_ABSPATH . ABET_ASSETS_DIR . 'admin.asset.php';
-			if ( file_exists( $script_asset_path ) ) {
-				$script_asset = require $script_asset_path;
-			} else {
-				$script_asset = [
-					'dependencies' => [],
-					'version'      => ABET_VERSION,
-				];
-			}
-
-			if ( file_exists( ABET_ABSPATH . ABET_ASSETS_DIR . 'admin.js' ) ) {
-				wp_enqueue_script(
-					'block-editor-templates-admin',
-					esc_url( ABET_ASSETS_URL ) . 'admin.js',
-					$script_asset['dependencies'],
-					$script_asset['version'],
-					false
-				);
-			} else {
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-				error_log( 'block-editor-templates-admin (admin.js) isn`t found. Forgot to run `npm run build`?' );
-			}
+		// Only load on the block-templates editor (new and existing posts), not on the list screen.
+		// get_queried_object_id() is unreliable in wp-admin, so rely on the current screen instead.
+		$screen = get_current_screen();
+		if ( ! $screen || 'post' !== $screen->base || 'block-templates' !== $screen->post_type ) {
+			return;
 		}
+
+		if ( ! file_exists( ABET_ABSPATH . ABET_ASSETS_DIR . 'admin.js' ) ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Surface a missing build instead of enqueuing a 404.
+			error_log( 'block-editor-templates-admin (admin.js) isn`t found. Forgot to run `npm run build`?' );
+
+			return;
+		}
+
+		$script_asset_path = ABET_ABSPATH . ABET_ASSETS_DIR . 'admin.asset.php';
+		$script_asset      = file_exists( $script_asset_path ) ? require $script_asset_path : [];
+
+		wp_enqueue_script(
+			'block-editor-templates-admin',
+			ABET_ASSETS_URL . 'admin.js',
+			$script_asset['dependencies'] ?? [],
+			$script_asset['version'] ?? ABET_VERSION,
+			false
+		);
 	}
 
 	/**
